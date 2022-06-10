@@ -177,10 +177,10 @@ class RnSocureSdk: NSObject, RCTBridgeModule {
         }
     } else {
         if let passportUrl = self.passportImageUrl {
-            imageUploader.uploadPassport(UploadCallback: self, front: passportUrl)
+            imageUploader.uploadPassport(UploadCallback: self, front: self.dataFromUrl(url: passportUrl))
         } else if let frontUrl = self.licenseFrontResult,
                   let backUrl = self.licenseBackResult {
-            imageUploader.uploadLicense(UploadCallback: self, front: frontUrl, back: backUrl)
+            imageUploader.uploadLicense(UploadCallback: self, front: self.dataFromUrl(url: frontUrl), back: self.dataFromUrl(url: backUrl))
         } else {
             reject("UPLOAD_ERROR", "Nothing to upload")
         }
