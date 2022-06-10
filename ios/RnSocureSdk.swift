@@ -163,7 +163,7 @@ class RnSocureSdk: NSObject, RCTBridgeModule {
     resolve: @escaping RCTPromiseResolveBlock,
     rejecter reject: @escaping RCTPromiseRejectBlock
   ) {
-   
+
     if let selfieUrl = self.selfieImageUrl {
         if let passportUrl = self.passportImageUrl {
             uploadPassportAndSelfie(selfieUrl, front: passportUrl, resolver: resolve, rejecter: reject)
@@ -176,7 +176,14 @@ class RnSocureSdk: NSObject, RCTBridgeModule {
             reject("UPLOAD_ERROR", "Failed to read document from URL", nil)
         }
     } else {
-      reject("UPLOAD_ERROR", "Failed to read selfie from URL", nil)
+        if let passportUrl = self.passportImageUrl {
+            imageUploader.uploadPassport(UploadCallback: self, front: passportUrl)
+        } else if let frontUrl = self.licenseFrontResult,
+                  let backUrl = self.licenseBackResult {
+            imageUploader.uploadLicense(UploadCallback: self, front: frontUrl, back: backUrl)
+        } else {
+            reject("UPLOAD_ERROR", "Nothing to upload")
+        }
     }
   }
   
