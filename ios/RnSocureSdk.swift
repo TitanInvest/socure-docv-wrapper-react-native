@@ -390,7 +390,7 @@ extension RnSocureSdk:ImageCallback {
         self.selfieResult = selfieScanResult
         self.selfieCaptureResolve?([
             "type": "SELFIE",
-            "selfieImage": imageData.base64EncodedString(options: .lineLength64Characters)
+            "image": imageData.base64EncodedString(options: .lineLength64Characters)
         ])
         referenceViewController?.dismiss(animated: true, completion: nil)
       } catch {
