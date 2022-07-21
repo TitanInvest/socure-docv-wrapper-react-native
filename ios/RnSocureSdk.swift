@@ -86,7 +86,7 @@ class RnSocureSdk: NSObject, RCTBridgeModule {
         
                 } else {
                     let alertController = UIAlertController(title:
-                                "Permission Error", message: "This application requires access to the camera to fuction. Please grant camera permission for the application", preferredStyle: .alert)
+                                "Permission Error", message: "We need permission to use your camera to take a selfie", preferredStyle: .alert)
                             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
                                 
                                 UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
@@ -388,7 +388,10 @@ extension RnSocureSdk:ImageCallback {
         let url = try saveImage(imageData: imageData, name: "selfie.jpg")
         self.selfieImageUrl = url.path
         self.selfieResult = selfieScanResult
-        self.selfieCaptureResolve?(url.path)
+        self.selfieCaptureResolve?([
+            "type": "SELFIE",
+            "selfieImage": imageData.base64EncodedString(options: .lineLength64Characters)
+        ])
         referenceViewController?.dismiss(animated: true, completion: nil)
       } catch {
         self.onError(errorType: SocureSDKErrorType.Error, errorMessage: "Failed to save image data")
