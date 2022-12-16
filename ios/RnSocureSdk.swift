@@ -302,6 +302,11 @@ class RnSocureSdk: NSObject, RCTBridgeModule {
     }
   }
 
+    @objc(setSocureSdkKey:)
+  func setSocureSdkKey(_ publicKey: String) {
+      SDKAppDataPublic.setSocureSdkKey(publicKey)
+  }
+
   // TODO: Move to util
   func saveImage(imageData: Data, name: String) throws -> URL {
     let docsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -392,6 +397,7 @@ extension RnSocureSdk:ImageCallback {
             "type": "SELFIE",
             "image": imageData.base64EncodedString(options: .lineLength64Characters)
         ])
+        self.selfieCaptureReject = nil
         referenceViewController?.dismiss(animated: true, completion: nil)
       } catch {
         self.onError(errorType: SocureSDKErrorType.Error, errorMessage: "Failed to save image data")
@@ -399,9 +405,15 @@ extension RnSocureSdk:ImageCallback {
     }
   }
   
-  func onScanCancelled() {
+   func onScanCancelled() {
     referenceViewController?.dismiss(animated: true, completion: {
         self.referenceViewController = nil
+        self.docScanReject?("DOC_SCAN_CANCELLED", "DOC_SCAN_CANCELLED", nil)
+        self.selfieCaptureReject?("SELFIE_SCAN_CANCELLED", "SELFIE_SCAN_CANCELLED", nil)
+        self.docScanReject = nil
+        self.docScanResolve = nil
+        self.selfieCaptureReject = nil
+        self.selfieCaptureResolve = nil
     })
   }
   
@@ -446,6 +458,7 @@ extension RnSocureSdk:ImageCallback {
     
   func onError(errorType: SocureSDKErrorType, errorMessage: String) {
     self.docScanReject?("DOC_SCAN_ERROR", errorMessage, nil)
+    self.selfieCaptureReject?("SELFIE_SCAN_ERROR", errorMessage, nil)
     self.referenceViewController?.dismiss(animated: true, completion: nil)
   }
 }
