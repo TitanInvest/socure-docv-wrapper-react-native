@@ -42,7 +42,7 @@
   },
   "peerDependencies": {
     "react": ">=16.13.1",
-    "react-native": ">=0.68.2"
+    "react-native": ">=0.63.5"
   },
   "@react-native-community/bob": {
     "source": "src",
