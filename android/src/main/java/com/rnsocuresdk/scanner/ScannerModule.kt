@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 const val SCAN_PASSPORT_CODE = 200
 const val SCAN_LICENSE_CODE = 300
 const val SCAN_SELFIE_CODE = 400
+const val BAR_CODE_NOT_DETECTED_ERROR_MSG = "{\"type\":\"com.socure.idplus.error.DocumentScanError\",\"message\":\"Bar code not detected\"}" // message thrown by Socure when it can't automatically detect a barcode
 
 interface ScanModuleResult {
 
@@ -56,9 +57,10 @@ abstract class ScannerModule(private val context: ReactApplicationContext): Base
         println("ON ACTIVITY RESULT MODULE $scanRequestCode")
         when (resultCode) {
           Activity.RESULT_OK -> {
-            data?.getStringExtra("error")?.let {
-              onError(requestCode, it)
-            } ?: run {
+            val errorMsg = data?.getStringExtra("error")
+            if (errorMsg != null && errorMsg != BAR_CODE_NOT_DETECTED_ERROR_MSG) { // Don't error when the barcode isn't detected
+              onError(requestCode, errorMsg);
+            } else {
               onSuccess(requestCode)
             }
           }
