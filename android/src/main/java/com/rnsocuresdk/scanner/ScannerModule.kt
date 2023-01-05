@@ -57,10 +57,8 @@ abstract class ScannerModule(private val context: ReactApplicationContext): Base
         when (resultCode) {
           Activity.RESULT_OK -> {
             val errorMsg = data?.getStringExtra("error")
-           // Stringified object that is thrown as an error message when Socure can't automatically detect the barcode
-           // We don't want to throw an error when the barcode can't automatically be detected
             val barCodeNotDetectedMsg = "{\"type\":\"com.socure.idplus.error.DocumentScanError\",\"message\":\"Bar code not detected\"}";
-            if (errorMsg != null && errorMsg != barCodeNotDetectedMsg) {
+            if (errorMsg != null && errorMsg != barCodeNotDetectedMsg) { // We don't want to throw an error when the barcode can't automatically be detected
               onError(requestCode, errorMsg);
             } else {
               onSuccess(requestCode)
